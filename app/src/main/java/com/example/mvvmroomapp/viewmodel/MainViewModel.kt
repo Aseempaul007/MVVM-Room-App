@@ -2,26 +2,33 @@ package com.example.mvvmroomapp.viewmodel
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.mvvmroomapp.data.local.StudentDb
 import com.example.mvvmroomapp.data.local.entity.Student
 import com.example.mvvmroomapp.repository.StudentRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class MainViewModel(val context: Context): ViewModel() {
+class MainViewModel(private var studentRepository: StudentRepository): ViewModel() {
 
-    private val studentRepository = StudentRepository(StudentDb.getInstance(context).dao())
-
-    suspend fun addStudent(id: Int, name: String, roll_no: Int, standard: String){
-        studentRepository.addStudent(Student(id,name,roll_no,standard))
+    fun addStudent(id: Int, name: String, roll_no: Int, standard: String){
+        viewModelScope.launch {
+            studentRepository.addStudent(Student(id, name, roll_no, standard))
+        }
     }
 
-    suspend fun deleteStudent(){
-        studentRepository.deleteStudent(context)
+    fun deleteStudent(){
+        viewModelScope.launch {
+            studentRepository.deleteStudent()
+        }
     }
 
-    suspend fun showStudents():List<Student>{
-        return studentRepository.showStudents(context)
+    suspend fun showStudents(): List<Student>{
+        return studentRepository.showStudents()
     }
 
 }

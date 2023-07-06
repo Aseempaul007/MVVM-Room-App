@@ -10,11 +10,11 @@ class StudentRepository(private val studentDao: StudentDao) {
         studentDao.addStudent(student)
     }
 
-    suspend fun deleteStudent(context: Context){
+    suspend fun deleteStudent(){
         studentDao.deleteStudent()
     }
 
-    suspend fun showStudents(context: Context): List<Student>{
+    suspend fun showStudents(): List<Student>{
         return studentDao.allStudents()
     }
 }
