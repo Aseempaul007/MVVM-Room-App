@@ -3,23 +3,26 @@ package com.example.mvvmroomapp.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
-import com.example.mvvmroomapp.R
 import com.example.mvvmroomapp.data.local.StudentDb
-import com.example.mvvmroomapp.data.local.entity.Student
 import com.example.mvvmroomapp.databinding.ActivityMainBinding
 import com.example.mvvmroomapp.repository.StudentRepository
+import com.example.mvvmroomapp.util.Constants.MY_TAG
 import com.example.mvvmroomapp.viewmodel.MainViewModel
-import com.example.mvvmroomapp.viewmodel.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
     lateinit var database: StudentDb
+    @Inject
+    lateinit var studentRepository: StudentRepository
+
     lateinit var mainViewModel: MainViewModel
     lateinit var mainBinding: ActivityMainBinding
 
@@ -28,12 +31,7 @@ class MainActivity : AppCompatActivity() {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        var studentRepository = StudentRepository(StudentDb.getInstance(applicationContext).dao())
-        mainViewModel = ViewModelProvider(
-            this,
-            MainViewModelFactory(studentRepository)
-        ).get(MainViewModel::class.java)
-        database = StudentDb.getInstance(applicationContext)
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         mainBinding.btn1.setOnClickListener {
             mainViewModel.addStudent(
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
         mainBinding.btn2.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                Log.d("Student_ATG", mainViewModel.showStudents().toString())
+                Log.d(MY_TAG, mainViewModel.showStudents().toString())
             }
         }
 

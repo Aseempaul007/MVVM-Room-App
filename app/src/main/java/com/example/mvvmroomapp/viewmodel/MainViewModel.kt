@@ -10,10 +10,13 @@ import androidx.room.Room
 import com.example.mvvmroomapp.data.local.StudentDb
 import com.example.mvvmroomapp.data.local.entity.Student
 import com.example.mvvmroomapp.repository.StudentRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(private var studentRepository: StudentRepository): ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private var studentRepository: StudentRepository): ViewModel() {
 
     fun addStudent(id: Int, name: String, roll_no: Int, standard: String){
         viewModelScope.launch {
